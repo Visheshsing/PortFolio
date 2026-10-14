@@ -1,0 +1,9 @@
+# This project is a static HTML/CSS/JS portfolio and does not require any Python packages.
+# Optional local preview tools:
+# - Python 3.x
+# - A modern web browser
+# - VS Code or any text editor
+# To preview locally, use any static file server or open the HTML file directly in a browser.
+HTML5
+CSS3
+JavaScript

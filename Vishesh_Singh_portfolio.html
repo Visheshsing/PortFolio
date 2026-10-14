@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vishesh Singh | AI/ML & Data Science Portfolio</title>
+  <style>
+    :root {
+      --bg-deep: #050814;
+      --bg-surface: rgba(13, 20, 40, 0.68);
+      --bg-card: rgba(16, 25, 52, 0.72);
+      --bg-card-hover: rgba(24, 36, 74, 0.85);
+      --accent-primary: #38bdf8;
+      --accent-secondary: #818cf8;
+      --accent-tertiary: #2dd4bf;
+      --accent-glow: rgba(56, 189, 248, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border-glass: rgba(148, 163, 184, 0.18);
+      --border-highlight: rgba(56, 189, 248, 0.55);
+      --float-amp: 1;
+      --perspective: 1200px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace;
+    }
+
+    [data-theme="emerald"] {
+      --bg-deep: #03110e;
+      --bg-surface: rgba(8, 32, 26, 0.7);
+      --bg-card: rgba(10, 42, 34, 0.72);
+      --bg-card-hover: rgba(15, 58, 47, 0.88);
+      --accent-primary: #34d399;
+      --accent-secondary: #2dd4bf;
+      --accent-tertiary: #a3e635;
+      --accent-glow: rgba(52, 211, 153, 0.35);
+      --border-highlight: rgba(52, 211, 153, 0.55);
+    }
+
+    [data-theme="solar"] {
+      --bg-deep: #120907;
+      --bg-surface: rgba(36, 17, 14, 0.72);
+      --bg-card: rgba(45, 21, 17, 0.74);
+      --bg-card-hover: rgba(64, 29, 23, 0.88);
+      --accent-primary: #fb923c;
+      --accent-secondary: #f43f5e;
+      --accent-tertiary: #facc15;
+      --accent-glow: rgba(251, 146, 60, 0.35);
+      --border-highlight: rgba(251, 146, 60, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    /* 3D WebGL / Canvas Background */
+    #canvas-3d {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Ambient Nebula Glows */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(110px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      transition: background 0.6s ease;
+    }
+    .orb-1 {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, var(--accent-primary), transparent 70%);
+      top: -120px;
+      left: -120px;
+    }
+    .orb-2 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-secondary), transparent 70%);
+      bottom: -180px;
+      right: -140px;
+    }
+
+    /* Floating Navigation HUD */
+    .hud-header {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: min(1240px, 94vw);
+      background: rgba(9, 14, 28, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-glass);
+      border-radius: 999px;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55), 0 0 25px var(--accent-glow);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 1.05rem;
+    }
+
+    .brand-cube {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      color: #040814;
+      font-size: 0.95rem;
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 7px 13px;
+      border-radius: 999px;
+      transition: all 0.25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 1px var(--border-highlight);
+    }
+
+    .hud-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hud-btn:hover,
+    .hud-btn.active {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.14);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    /* Main Content Container */
+    main {
+      position: relative;
+      z-index: 2;
+      width: min(1240px, 92vw);
+      margin: 0 auto;
+      padding-top: 110px;
+      padding-bottom: 100px;
+      perspective: var(--perspective);
+    }
+
+    section {
+      margin-bottom: 96px;
+      position: relative;
+    }
+
+    /* 3D Floating Card Physics Base */
+    .float-3d {
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 24px;
+      box-shadow: 0 22px 50px -12px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.04) inset;
+      overflow: hidden;
+    }
+
+    .float-3d::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 255, 255, 0.09),
+        transparent 40%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .float-3d:hover::before {
+      opacity: 1;
+    }
+
+    .float-3d:hover {
+      border-color: var(--border-highlight);
+      box-shadow: 0 30px 65px -10px rgba(0, 0, 0, 0.75), 0 0 28px var(--accent-glow);
+    }
+
+    /* Continuous Zero-Gravity Keyframes */
+    @keyframes floatSlowA {
+      0%, 100% { transform: translate3d(0, 0px, 0) rotateX(0deg) rotateY(0deg); }
+      50% { transform: translate3d(0, calc(-10px * var(--float-amp)), 8px) rotateX(1deg) rotateY(-1deg); }
+    }
+    @keyframes floatSlowB {
+      0%, 100% { transform: translate3d(0, 0px, 0) rotateX(0deg) rotateY(0deg); }
+      50% { transform: translate3d(0, calc(9px * var(--float-amp)), 12px) rotateX(-1deg) rotateY(1.2deg); }
+    }
+
+    .levitate-a {
+      animation: floatSlowA 6.5s ease-in-out infinite;
+    }
+    .levitate-b {
+      animation: floatSlowB 7.8s ease-in-out infinite;
+    }
+
+    /* Section Headers */
+    .section-header {
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      padding: 5px 14px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    .section-title {
+      font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      max-width: 720px;
+      font-size: 1rem;
+    }
+
+    /* HERO SECTION */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.95fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-card {
+      padding: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(45, 212, 191, 0.12);
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      color: var(--accent-tertiary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      width: fit-content;
+      margin-bottom: 20px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-tertiary);
+      box-shadow: 0 0 12px var(--accent-tertiary);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.55; }
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 4.6vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.06;
+      margin-bottom: 14px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 10%, var(--accent-primary) 55%, var(--accent-secondary) 95%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-role {
+      font-family: var(--font-mono);
+      font-size: 1.08rem;
+      color: var(--accent-primary);
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    .hero-bio {
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      margin-bottom: 28px;
+      max-width: 640px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      text-decoration: none;
+      transition: all 0.22s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #040814;
+      border: none;
+      box-shadow: 0 10px 25px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--border-glass);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .hero-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-glass);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* Right Hero Hologram / 3D Core Card */
+    .hologram-card {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    #mini-3d-sphere {
+      width: 100%;
+      height: 270px;
+      border-radius: 18px;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.12), rgba(5, 8, 20, 0.5));
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      cursor: grab;
+    }
+
+    #mini-3d-sphere:active {
+      cursor: grabbing;
+    }
+
+    .kpi-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .kpi-tile {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
+
+    .kpi-label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .impact-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+      margin: 18px 0 28px;
+    }
+
+    .impact-card {
+      padding: 22px 20px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .impact-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-primary);
+    }
+
+    .impact-card h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .impact-card p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .impact-card strong {
+      font-family: var(--font-mono);
+      color: var(--accent-secondary);
+      font-size: 0.92rem;
+    }
+
+    .cta-band {
+      margin: 12px 0 28px;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .cta-band h3 {
+      font-size: clamp(1.2rem, 2.4vw, 1.75rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-band p {
+      color: var(--text-muted);
+      max-width: 720px;
+    }
+
+    .cta-band .hero-actions {
+      margin: 0;
+    }
+
+    /* FLOATING EXPERIENCE & EDUCATION TIMELINE */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .exp-card {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .exp-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .exp-badge {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(129, 140, 248, 0.14);
+      border: 1px solid rgba(129, 140, 248, 0.35);
+      color: var(--accent-secondary);
+      white-space: nowrap;
+    }
+
+    .exp-role {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .exp-company {
+      font-size: 0.92rem;
+      color: var(--accent-primary);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .exp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .exp-list li {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .exp-list li::before {
+      content: "▹";
+      position: absolute;
+      left: 0;
+      color: var(--accent-primary);
+    }
+
+    /* FEATURED 3D HOLOGRAPHIC PROJECTS */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(129, 140, 248, 0.22));
+      color: var(--text-main);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      position: relative;
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .project-category {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-tertiary);
+      background: rgba(45, 212, 191, 0.12);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .project-metric {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .project-title {
+      font-size: 1.28rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-top: 6px;
+    }
+
+    .project-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .project-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .project-highlights li {
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .project-highlights li::before {
+      content: "•";
+      color: var(--accent-primary);
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    .tech-stack-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tech-chip {
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      padding: 4px 9px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+    }
+
+    .project-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-glass);
+      gap: 10px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .repo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .repo-link:hover {
+      text-decoration: underline;
+    }
+
+    .inspect-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .inspect-btn:hover {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    /* ALL 21 GITHUB REPOSITORIES VAULT */
+    .vault-card {
+      padding: 30px;
+    }
+
+    .vault-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      background: rgba(5, 8, 20, 0.7);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      width: min(360px, 100%);
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .repo-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .repo-mini-item {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border-glass);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .repo-mini-item:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-3px);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .repo-mini-name {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      word-break: break-word;
+    }
+
+    .repo-mini-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .repo-mini-lang {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--accent-tertiary);
+    }
+
+    /* SKILLS MATRIX & 3D ORBIT */
+    .skills-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+    }
+
+    .skills-categories {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .skill-box {
+      padding: 22px;
+    }
+
+    .skill-box-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .skill-pill:hover {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.16);
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    /* AI TWIN TERMINAL & CONTACT */
+    .twin-contact-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+    }
+
+    .terminal-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #f59e0b; }
+    .dot-g { background: #10b981; }
+
+    .terminal-log {
+      background: rgba(4, 7, 18, 0.78);
+      border: 1px solid var(--border-glass);
+      border-radius: 14px;
+      padding: 16px;
+      height: 230px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.83rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg-bot {
+      color: #e2e8f0;
+      border-left: 2px solid var(--accent-primary);
+      padding-left: 10px;
+    }
+
+    .msg-user {
+      color: var(--accent-tertiary);
+      align-self: flex-end;
+    }
+
+    .quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .prompt-chip {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-primary);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+
+    .prompt-chip:hover {
+      background: rgba(56, 189, 248, 0.22);
+    }
+
+    .terminal-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .contact-card {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .contact-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-link-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .contact-link-row:hover {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.1);
+      transform: translateX(4px);
+    }
+
+    /* MODAL FOR 3D PROJECT ARCHITECTURE */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 16, 0.82);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(680px, 95vw);
+      background: #0d152c;
+      border: 1px solid var(--accent-primary);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 35px var(--accent-glow);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 0 20px;
+      border-top: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .timeline-grid,
+      .skills-layout,
+      .twin-contact-grid {
+        grid-template-columns: 1fr;
+      }
+      .skills-categories {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Background Glows -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+
+  <!-- Full-Viewport Interactive 3D Neural Particle & Polyhedra Canvas -->
+  <canvas id="canvas-3d"></canvas>
+
+  <!-- Floating Navigation HUD -->
+  <header class="hud-header">
+    <a href="#top" class="brand-logo">
+      <div class="brand-cube">VS</div>
+      <span>Vishesh Singh</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#about" class="active">3D Core</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Flagship Projects</a></li>
+      <li><a href="#github-vault">21-Repo Vault</a></li>
+      <li><a href="#skills">3D Skill Matrix</a></li>
+      <li><a href="#contact">AI Twin & Contact</a></li>
+    </ul>
+
+    <div class="hud-controls">
+      <button class="hud-btn active" id="btn-gravity" title="Toggle 3D Zero-Gravity Float Intensity">
+        <span>🪐 Gravity:</span> <strong id="gravity-label">Zero-G</strong>
+      </button>
+      <button class="hud-btn" id="btn-mode" title="Switch 3D Background Geometry Mode">
+        <span>✨ Mode:</span> <strong id="mode-label">Neural Core</strong>
+      </button>
+      <button class="hud-btn" id="btn-theme" title="Switch Color Theme">
+        <span>🎨 Theme</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO SECTION -->
+    <section id="about" class="hero-grid">
+      <div class="float-3d hero-card levitate-a" data-tilt>
+        <div>
+          <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>AI/ML Intern @ Bacancy Technology • Ahmedabad, India</span>
+          </div>
+
+          <h1 class="hero-title">
+            Hi, I'm <span class="gradient-text">Vishesh Singh</span>
+          </h1>
+
+          <div class="hero-role">
+            &gt; AI / ML Engineer | Data Scientist | Generative AI &amp; Agentic Systems Builder
+          </div>
+
+          <p class="hero-bio">
+            Computer Science &amp; Engineering graduate (B.Tech, CSJM University Kanpur) engineering production-ready
+            <strong>Machine Learning pipelines</strong>, <strong>Deep Learning computer vision &amp; NLP models</strong>,
+            and <strong>stateful LangChain / LangGraph RAG agents</strong>. Passionate about turning complex datasets
+            into high-accuracy, scalable AI systems.
+          </p>
+
+          <div class="hero-actions">
+            <a href="https://github.com/Visheshsing" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              <span>⚡ Explore GitHub (@Visheshsing)</span>
+            </a>
+            <a href="http://www.linkedin.com/in/vishesh-singh-370602222" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              <span>🔗 Connect on LinkedIn</span>
+            </a>
+            <a href="mailto:specialvish8840@gmail.com" class="btn-secondary">
+              <span>✉️ specialvish8840@gmail.com</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-meta-bar">
+          <div class="hero-meta-item">📍 <strong>Current Location:</strong> Ahmedabad, Gujarat</div>
+          <div class="hero-meta-item">🎓 <strong>Degree:</strong> B.Tech CSE (2021–2025)</div>
+          <div class="hero-meta-item">📞 <strong>Phone:</strong> +91 8840241747</div>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE 3D SKILL & METRIC HOLOGRAM CARD -->
+      <div class="float-3d hologram-card levitate-b" data-tilt>
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span class="eyebrow" style="font-size:0.7rem;">INTERACTIVE 3D NEURAL ORBIT</span>
+          <span style="font-family:var(--font-mono);font-size:0.74rem;color:var(--text-muted);">Drag to Rotate 360°</span>
+        </div>
+
+        <canvas id="mini-3d-sphere" width="440" height="270"></canvas>
+
+        <div class="kpi-mini-grid">
+          <div class="kpi-tile">
+            <div class="kpi-value">93.43%</div>
+            <div class="kpi-label">BERT Sentiment Test Accuracy</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-value">91.24%</div>
+            <div class="kpi-label">Wildlife EfficientNet Accuracy</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-value">0.99 R²</div>
+            <div class="kpi-label">Real Estate Price ML Model</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-value">21 Repos</div>
+            <div class="kpi-label">Open-Source AI/ML Projects</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Portfolio highlights" class="impact-strip">
+      <article class="float-3d impact-card levitate-a" data-tilt>
+        <span class="impact-kicker">Focus</span>
+        <h3>AI products with real-world impact</h3>
+        <p>Building ML systems that move from experiments to measurable business outcomes and cleaner decision-making.</p>
+        <strong>GenAI · CV · NLP</strong>
+      </article>
+
+      <article class="float-3d impact-card levitate-b" data-tilt>
+        <span class="impact-kicker">Workflow</span>
+        <h3>End-to-end pipeline thinking</h3>
+        <p>From data collection and feature engineering to deployment, monitoring, and evaluation.</p>
+        <strong>Python · Data Ops</strong>
+      </article>
+
+      <article class="float-3d impact-card levitate-a" data-tilt>
+        <span class="impact-kicker">Delivery</span>
+        <h3>Research-backed practical execution</h3>
+        <p>Combining model innovation with engineering discipline so results stay reproducible and scalable.</p>
+        <strong>FastAPI · MLOps</strong>
+      </article>
+
+      <article class="float-3d impact-card levitate-b" data-tilt>
+        <span class="impact-kicker">Value</span>
+        <h3>Clear communication + measurable results</h3>
+        <p>Presenting insights in an understandable way for stakeholders, technical teams, and product leaders.</p>
+        <strong>BI · Storytelling</strong>
+      </article>
+    </section>
+
+    <div class="float-3d cta-band" data-tilt>
+      <div>
+        <h3>Currently building smarter, explainable AI workflows.</h3>
+        <p>Open to AI/ML, data science, and applied research opportunities where experimentation and product impact matter.</p>
+      </div>
+      <div class="hero-actions">
+        <a href="#projects" class="btn-primary">View Case Studies</a>
+        <a href="#contact" class="btn-secondary">Book a Conversation</a>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE & EDUCATION SECTION -->
+    <section id="experience">
+      <div class="section-header">
+        <span class="eyebrow">01 // CAREER &amp; ACADEMIC TRAJECTORY</span>
+        <h2 class="section-title">Experience, Simulations &amp; Education</h2>
+        <p class="section-subtitle">
+          Hands-on industry training and project simulations across Generative AI, predictive analytics, and computer science fundamentals.
+        </p>
+      </div>
+
+      <div class="timeline-grid">
+        <div class="float-3d exp-card levitate-a" data-tilt>
+          <div>
+            <div class="exp-top">
+              <div>
+                <div class="exp-role">AI/ML Intern</div>
+                <div class="exp-company">Bacancy Technology • Ahmedabad</div>
+              </div>
+              <span class="exp-badge">Sep 2026 – Present</span>
+            </div>
+            <ul class="exp-list" style="margin-top:14px;">
+              <li>Participating in structured AI/ML engineering workflows focused on applying machine learning to implementation-oriented tasks.</li>
+              <li>Strengthening pipelines in Python, exploratory data analysis, feature engineering, and rigorous model evaluation.</li>
+              <li>Building deep learning, NLP, and LLM-based application architectures aligned with computer vision and agentic AI systems.</li>
+            </ul>
+          </div>
+          <div class="tech-stack-row">
+            <span class="tech-chip">Python</span>
+            <span class="tech-chip">Machine Learning</span>
+            <span class="tech-chip">Deep Learning</span>
+            <span class="tech-chip">LLMs &amp; NLP</span>
+          </div>
+        </div>
+
+        <div class="float-3d exp-card levitate-b" data-tilt>
+          <div>
+            <div class="exp-top">
+              <div>
+                <div class="exp-role">Data Analytics Simulation</div>
+                <div class="exp-company">Tata Group (Forage) &amp; Coding Juniors</div>
+              </div>
+              <span class="exp-badge">2025 – Aug 2026</span>
+            </div>
+            <ul class="exp-list" style="margin-top:14px;">
+              <li><strong>Tata Group (Aug 2026):</strong> Performed GenAI-assisted EDA to identify delinquency risk factors and designed an agentic AI collections framework with explainability &amp; compliance.</li>
+              <li><strong>Coding Juniors AI Intern (Jan–Mar 2025):</strong> Built a LangChain &amp; Streamlit AI agent with custom database tools and neural network workflows for the food delivery sector.</li>
+            </ul>
+          </div>
+          <div class="tech-stack-row">
+            <span class="tech-chip">GenAI EDA</span>
+            <span class="tech-chip">Agentic AI</span>
+            <span class="tech-chip">LangChain</span>
+            <span class="tech-chip">Streamlit</span>
+          </div>
+        </div>
+
+        <div class="float-3d exp-card levitate-a" data-tilt>
+          <div>
+            <div class="exp-top">
+              <div>
+                <div class="exp-role">B.Tech in Computer Science</div>
+                <div class="exp-company">CSJM University, Kanpur</div>
+              </div>
+              <span class="exp-badge">Nov 2021 – Jun 2025</span>
+            </div>
+            <ul class="exp-list" style="margin-top:14px;">
+              <li>Bachelor of Technology in Computer Science &amp; Engineering with focus on AI, Data Science, Algorithms, and Databases.</li>
+              <li><strong>Certifications:</strong> ML &amp; Data Science Program (DSMP 1.0 &amp; DSMP 2.0) by CampusX.</li>
+              <li><strong>Certification:</strong> Machine Learning Master Program by Euron.</li>
+            </ul>
+          </div>
+          <div class="tech-stack-row">
+            <span class="tech-chip">B.Tech CSE</span>
+            <span class="tech-chip">CampusX DSMP 1.0/2.0</span>
+            <span class="tech-chip">Euron ML Master</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLAGSHIP 3D PROJECTS SECTION -->
+    <section id="projects">
+      <div class="section-header">
+        <span class="eyebrow">02 // HOLOGRAPHIC PROJECT DECK</span>
+        <h2 class="section-title">Featured AI, ML &amp; GenAI Systems</h2>
+        <p class="section-subtitle">
+          Hover any card to experience 3D perspective tilt, filter by domain, or click <strong>3D Inspect</strong> to view system architecture and benchmarks.
+        </p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-pills">
+          <button class="filter-btn active" data-filter="all">All Flagship (8)</button>
+          <button class="filter-btn" data-filter="genai">Generative AI &amp; Agents</button>
+          <button class="filter-btn" data-filter="dl">Deep Learning &amp; NLP</button>
+          <button class="filter-btn" data-filter="ml">Machine Learning &amp; MLOps</button>
+          <button class="filter-btn" data-filter="analytics">Data Analytics &amp; BI</button>
+        </div>
+      </div>
+
+      <div class="projects-grid" id="featured-projects-grid">
+        <!-- Project 1 -->
+        <article class="float-3d project-card" data-category="dl" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">Computer Vision • PyTorch</span>
+              <span class="project-metric">91.24% Val Accuracy</span>
+            </div>
+            <h3 class="project-title">Wildlife Image Classification for Conservation</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              End-to-end deep learning pipeline classifying camera-trap wildlife imagery across 8 species categories for biodiversity conservation.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Engineered transfer learning pipeline with PyTorch and EfficientNet architecture.</li>
+              <li>Applied custom data augmentation, class balancing, and hyperparameter tuning.</li>
+              <li>Achieved 91.24% validation accuracy on the DrivenData competition leaderboard.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">PyTorch</span>
+              <span class="tech-chip">EfficientNet</span>
+              <span class="tech-chip">Transfer Learning</span>
+              <span class="tech-chip">Computer Vision</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/Wildlife-Image-Classification-for-Conservation" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(0)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="float-3d project-card" data-category="dl" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">NLP • Transformers</span>
+              <span class="project-metric">93.43% Test Accuracy</span>
+            </div>
+            <h3 class="project-title">BERT Fine-Tuning for Sentiment Analysis</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              High-throughput transformer sentiment classification pipeline tracked with Weights &amp; Biases.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Fine-tuned pretrained BERT using Hugging Face Transformers to reach 93.43% test accuracy.</li>
+              <li>Integrated Weights &amp; Biases (W&amp;B) for automated experiment tracking and loss curves.</li>
+              <li>Optimized real-time inference pipeline delivering 23.32 samples/sec throughput.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">BERT</span>
+              <span class="tech-chip">Hugging Face</span>
+              <span class="tech-chip">Weights &amp; Biases</span>
+              <span class="tech-chip">PyTorch</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/BERT_Fine_Tuning_for_Sentiment_Analysis-" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(1)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="float-3d project-card" data-category="genai" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">Agentic AI • LangChain</span>
+              <span class="project-metric">Gemini ReAct Agent</span>
+            </div>
+            <h3 class="project-title">AI Restaurant Assistant (Zomato AI Agent)</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              Conversational ReAct agent capable of autonomous table bookings, food ordering, and review management.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Designed modular Python &amp; SQLAlchemy backend services for bookings, orders, and reviews.</li>
+              <li>Synthesized realistic restaurant validation datasets using Faker.</li>
+              <li>Orchestrated a LangChain ReAct agent powered by Google Gemini API for natural-language tool execution.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">LangChain</span>
+              <span class="tech-chip">Gemini API</span>
+              <span class="tech-chip">SQLAlchemy</span>
+              <span class="tech-chip">ReAct Agent</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/Zomato-Assistant-AI-Powered-Restaurant" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(2)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 4 -->
+        <article class="float-3d project-card" data-category="genai" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">Stateful RAG • LangGraph</span>
+              <span class="project-metric">FastAPI + Streamlit</span>
+            </div>
+            <h3 class="project-title">RAG ChatPDF — Agentic Document Intelligence</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              Multi-step Retrieval-Augmented Generation system with stateful graph memory for querying complex PDF documents.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Built stateful agentic retrieval workflows using LangGraph and vector embeddings.</li>
+              <li>Exposed asynchronous REST endpoints via FastAPI for low-latency document Q&amp;A.</li>
+              <li>Delivered an interactive document chat interface in Streamlit.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">LangGraph</span>
+              <span class="tech-chip">RAG</span>
+              <span class="tech-chip">FastAPI</span>
+              <span class="tech-chip">Streamlit</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/RAG_ChatPDF" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(3)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 5 -->
+        <article class="float-3d project-card" data-category="genai" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">GenAI • NLP &amp; Audio</span>
+              <span class="project-metric">Groq LPU + Google TTS</span>
+            </div>
+            <h3 class="project-title">Real-Time BBC News Summarization &amp; Sentiment System</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              Automated live news ingestion, LLM summarization, sentiment scoring, and text-to-speech audio broadcasting.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Built an automated web scraping pipeline with BeautifulSoup for real-time BBC article ingestion.</li>
+              <li>Integrated Groq API for ultra-fast abstractive summarization and sentiment classification.</li>
+              <li>Added Google Text-to-Speech (TTS) synthesis for hands-free audio news briefings.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">Groq API</span>
+              <span class="tech-chip">BeautifulSoup</span>
+              <span class="tech-chip">Google TTS</span>
+              <span class="tech-chip">Sentiment NLP</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/BBC_News_Summarization" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(4)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 6 -->
+        <article class="float-3d project-card" data-category="ml" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">Machine Learning • MLOps</span>
+              <span class="project-metric">R² Score: 0.99</span>
+            </div>
+            <h3 class="project-title">Real Estate Price Prediction, Recommendation &amp; Analytics</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              Full-lifecycle property valuation, similarity recommendation engine, and market analytics platform with MLOps tracking.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Trained Scikit-learn regression pipelines achieving a 0.99 R² score on evaluated property datasets.</li>
+              <li>Executed outlier removal, dimensional feature engineering, and interactive price analytics.</li>
+              <li>Tracked dataset versions with DVC and logged experiments across iterations via MLflow.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">Scikit-learn</span>
+              <span class="tech-chip">MLflow</span>
+              <span class="tech-chip">DVC</span>
+              <span class="tech-chip">Pandas</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/Real-state-price-prediction-and-recommendations-and-analytics" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(5)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 7 -->
+        <article class="float-3d project-card" data-category="analytics" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">BI &amp; Financial Analytics</span>
+              <span class="project-metric">Real-Time KPIs</span>
+            </div>
+            <h3 class="project-title">Credit Card Financial Weekly Dashboard</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              Executive financial intelligence dashboard monitoring weekly credit card transaction velocity, revenue, and delinquency KPIs.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Modeled SQL &amp; Power BI data pipelines for transaction volume, interest earned, and customer segments.</li>
+              <li>Delivered real-time weekly trend comparisons and demographic drill-downs.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">Power BI</span>
+              <span class="tech-chip">SQL</span>
+              <span class="tech-chip">DAX</span>
+              <span class="tech-chip">Financial KPIs</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/Credit-card-financial-dashboard" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(6)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 8 -->
+        <article class="float-3d project-card" data-category="analytics" data-tilt>
+          <div>
+            <div class="project-header">
+              <span class="project-category">Customer Analytics</span>
+              <span class="project-metric">SQL + Python + BI</span>
+            </div>
+            <h3 class="project-title">Customer Trends &amp; Behavior Data Analysis</h3>
+            <p class="project-desc" style="margin-top:8px;">
+              End-to-end customer cohort, retention, and purchasing trend analysis combining SQL, Python, and Power BI.
+            </p>
+            <ul class="project-highlights" style="margin-top:12px;">
+              <li>Queried structured transactional tables with SQL and performed statistical profiling in Python.</li>
+              <li>Built interactive Power BI executive views highlighting high-value customer segments.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tech-stack-row" style="margin-bottom:14px;">
+              <span class="tech-chip">Python</span>
+              <span class="tech-chip">SQL</span>
+              <span class="tech-chip">Power BI</span>
+              <span class="tech-chip">EDA</span>
+            </div>
+            <div class="project-footer">
+              <a class="repo-link" href="https://github.com/Visheshsing/Customer-trends-data-analysis-SQL-Python-PowerBI" target="_blank" rel="noopener noreferrer">
+                <span>GitHub Repository ↗</span>
+              </a>
+              <button class="inspect-btn" onclick="openProjectModal(7)">3D Inspect ⚡</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- COMPLETE 21-REPOSITORY GITHUB VAULT -->
+    <section id="github-vault">
+      <div class="section-header">
+        <span class="eyebrow">03 // COMPLETE GITHUB REPOSITORY INDEX</span>
+        <h2 class="section-title">All 21 Public Repositories (@Visheshsing)</h2>
+        <p class="section-subtitle">
+          Every public repository from <a href="https://github.com/Visheshsing?tab=repositories" target="_blank" rel="noopener noreferrer" style="color:var(--accent-primary);">github.com/Visheshsing</a> indexed and searchable in real time.
+        </p>
+      </div>
+
+      <div class="float-3d vault-card" data-tilt>
+        <div class="vault-controls">
+          <input type="text" id="repo-search" class="search-input" placeholder="🔍 Search 21 repositories by name, tech, or topic..." />
+          <span style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-muted);" id="repo-count-label">Showing 21 of 21 repositories</span>
+        </div>
+
+        <div class="repo-mini-grid" id="repo-vault-grid"></div>
+      </div>
+    </section>
+
+    <!-- 3D SKILL MATRIX SECTION -->
+    <section id="skills">
+      <div class="section-header">
+        <span class="eyebrow">04 // TECHNICAL ARSENAL</span>
+        <h2 class="section-title">Multi-Dimensional AI &amp; Data Stack</h2>
+        <p class="section-subtitle">
+          Production tools spanning Generative AI, Deep Learning, Classical ML, MLOps, and Business Intelligence.
+        </p>
+      </div>
+
+      <div class="skills-categories">
+        <div class="float-3d skill-box levitate-a" data-tilt>
+          <div class="skill-box-title">🧠 Generative AI &amp; Agentic Workflows</div>
+          <div class="skill-tag-cloud">
+            <span class="skill-pill">LangChain</span>
+            <span class="skill-pill">LangGraph</span>
+            <span class="skill-pill">RAG Pipelines</span>
+            <span class="skill-pill">ReAct AI Agents</span>
+            <span class="skill-pill">Gemini API</span>
+            <span class="skill-pill">Groq API</span>
+            <span class="skill-pill">Vector Stores</span>
+            <span class="skill-pill">Document Loaders</span>
+            <span class="skill-pill">LLM Memory Systems</span>
+          </div>
+        </div>
+
+        <div class="float-3d skill-box levitate-b" data-tilt>
+          <div class="skill-box-title">🔬 Deep Learning, CV &amp; NLP</div>
+          <div class="skill-tag-cloud">
+            <span class="skill-pill">PyTorch</span>
+            <span class="skill-pill">TensorFlow</span>
+            <span class="skill-pill">Hugging Face Transformers</span>
+            <span class="skill-pill">BERT Fine-Tuning</span>
+            <span class="skill-pill">EfficientNet</span>
+            <span class="skill-pill">Transfer Learning</span>
+            <span class="skill-pill">Sentiment Analysis</span>
+            <span class="skill-pill">Abstractive Summarization</span>
+            <span class="skill-pill">Google TTS</span>
+          </div>
+        </div>
+
+        <div class="float-3d skill-box levitate-b" data-tilt>
+          <div class="skill-box-title">⚙️ Machine Learning, APIs &amp; MLOps</div>
+          <div class="skill-tag-cloud">
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">Scikit-learn</span>
+            <span class="skill-pill">FastAPI</span>
+            <span class="skill-pill">Streamlit</span>
+            <span class="skill-pill">MLflow</span>
+            <span class="skill-pill">DVC</span>
+            <span class="skill-pill">Weights &amp; Biases (W&amp;B)</span>
+            <span class="skill-pill">SQLAlchemy</span>
+            <span class="skill-pill">Feature Engineering</span>
+          </div>
+        </div>
+
+        <div class="float-3d skill-box levitate-a" data-tilt>
+          <div class="skill-box-title">📊 Data Analytics, SQL &amp; Visualization</div>
+          <div class="skill-tag-cloud">
+            <span class="skill-pill">SQL &amp; PostgreSQL</span>
+            <span class="skill-pill">Pandas &amp; NumPy</span>
+            <span class="skill-pill">Power BI</span>
+            <span class="skill-pill">Looker</span>
+            <span class="skill-pill">Plotly &amp; Streamlit Viz</span>
+            <span class="skill-pill">Matplotlib &amp; Seaborn</span>
+            <span class="skill-pill">Excel Analytics</span>
+            <span class="skill-pill">BeautifulSoup Scraping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE AI TWIN & CONTACT SECTION -->
+    <section id="contact">
+      <div class="section-header">
+        <span class="eyebrow">05 // INTERACTIVE AI TWIN &amp; DIRECT DISPATCH</span>
+        <h2 class="section-title">Ask Vishesh's AI Assistant or Connect Directly</h2>
+        <p class="section-subtitle">
+          Test the interactive portfolio assistant below or reach out via GitHub, LinkedIn, email, or phone.
+        </p>
+      </div>
+
+      <div class="twin-contact-grid">
+        <!-- Interactive AI Assistant -->
+        <div class="float-3d terminal-card" data-tilt>
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="dot dot-r"></span>
+              <span class="dot dot-y"></span>
+              <span class="dot dot-g"></span>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);">vishesh-ai-twin://agent-console</span>
+          </div>
+
+          <div class="terminal-log" id="chat-log">
+            <div class="msg-bot">
+              <strong>[Vishesh AI Twin]:</strong> Hello! I'm trained on Vishesh Singh's resume, experience at Bacancy Technology, and all 21 GitHub repositories. Click a prompt below or ask me anything!
+            </div>
+          </div>
+
+          <div class="quick-prompts">
+            <button class="prompt-chip" onclick="askTwin('What is Vishesh currently working on?')">Current Role?</button>
+            <button class="prompt-chip" onclick="askTwin('Tell me about his top AI & ML projects and accuracy metrics.')">Top Projects &amp; Metrics?</button>
+            <button class="prompt-chip" onclick="askTwin('What is his GenAI and MLOps tech stack?')">GenAI &amp; MLOps Stack?</button>
+            <button class="prompt-chip" onclick="askTwin('How can I contact or hire Vishesh?')">Contact Details?</button>
+          </div>
+
+          <div class="terminal-input-row">
+            <input type="text" id="chat-input" class="search-input" style="flex:1;" placeholder="Ask about Vishesh's skills, projects, or experience..." onkeydown="if(event.key==='Enter') sendChat()" />
+            <button class="btn-primary" style="padding:10px 18px;" onclick="sendChat()">Send ↵</button>
+          </div>
+        </div>
+
+        <!-- Direct Contact Card -->
+        <div class="float-3d contact-card" data-tilt>
+          <div>
+            <span class="eyebrow" style="margin-bottom:12px;">OPEN FOR AI/ML &amp; DATA SCIENCE ROLES</span>
+            <h3 style="font-size:1.5rem;font-weight:800;margin-bottom:8px;">Let's Build Intelligent Systems Together</h3>
+            <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:20px;">
+              Whether you're hiring for AI/ML Engineer, Data Scientist, GenAI Developer, or Data Analyst roles, feel free to connect directly.
+            </p>
+
+            <div class="contact-links-list">
+              <a href="https://github.com/Visheshsing" target="_blank" rel="noopener noreferrer" class="contact-link-row">
+                <div>
+                  <div style="font-weight:700;">GitHub Profile</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">github.com/Visheshsing (21 Public Repos)</div>
+                </div>
+                <span style="color:var(--accent-primary);font-family:var(--font-mono);">↗</span>
+              </a>
+
+              <a href="http://www.linkedin.com/in/vishesh-singh-370602222" target="_blank" rel="noopener noreferrer" class="contact-link-row">
+                <div>
+                  <div style="font-weight:700;">LinkedIn Profile</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">linkedin.com/in/vishesh-singh-370602222</div>
+                </div>
+                <span style="color:var(--accent-primary);font-family:var(--font-mono);">↗</span>
+              </a>
+
+              <a href="mailto:specialvish8840@gmail.com" class="contact-link-row">
+                <div>
+                  <div style="font-weight:700;">Email Address</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">specialvish8840@gmail.com</div>
+                </div>
+                <span style="color:var(--accent-primary);font-family:var(--font-mono);">✉️</span>
+              </a>
+
+              <a href="tel:+918840241747" class="contact-link-row">
+                <div>
+                  <div style="font-weight:700;">Direct Phone</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">+91 8840241747 (Deoria, Uttar Pradesh, India)</div>
+                </div>
+                <span style="color:var(--accent-primary);font-family:var(--font-mono);">📞</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        Designed &amp; Engineered as an Interactive 3D Floating Portfolio for <strong>Vishesh Singh</strong> •
+        <a href="https://github.com/Visheshsing" target="_blank" rel="noopener noreferrer" style="color:var(--accent-primary);text-decoration:none;">GitHub</a> •
+        <a href="http://www.linkedin.com/in/vishesh-singh-370602222" target="_blank" rel="noopener noreferrer" style="color:var(--accent-primary);text-decoration:none;">LinkedIn</a>
+      </p>
+    </footer>
+  </main>
+
+  <!-- 3D PROJECT ARCHITECTURE MODAL -->
+  <div class="modal-backdrop" id="project-modal" onclick="if(event.target===this) closeProjectModal()">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeProjectModal()">✕</button>
+      <span class="eyebrow" id="modal-category">CATEGORY</span>
+      <h3 style="font-size:1.6rem;font-weight:800;margin:10px 0 6px;" id="modal-title">Project Title</h3>
+      <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent-primary);margin-bottom:16px;" id="modal-metric">Metric</div>
+      <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:18px;" id="modal-desc"></p>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border-glass);border-radius:14px;padding:16px;margin-bottom:18px;">
+        <div style="font-family:var(--font-mono);font-size:0.76rem;color:var(--accent-tertiary);margin-bottom:8px;">3D PIPELINE ARCHITECTURE &amp; HIGHLIGHTS</div>
+        <ul class="exp-list" id="modal-bullets"></ul>
+      </div>
+      <div class="tech-stack-row" id="modal-stack" style="margin-bottom:22px;"></div>
+      <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary">Open Repository on GitHub ↗</a>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. ALL 21 VERIFIED GITHUB REPOSITORIES DATA
+    // =========================================================================
+    const allRepos = [
+      { name: "Wildlife-Image-Classification-for-Conservation", lang: "Jupyter Notebook • PyTorch", desc: "Wildlife image classification into 8 animal categories using PyTorch & EfficientNet (91.24% accuracy)." },
+      { name: "BERT_Fine_Tuning_for_Sentiment_Analysis-", lang: "Jupyter Notebook • Transformers", desc: "Fine-tuned BERT model with Hugging Face & W&B tracking achieving 93.43% accuracy and 23.32 samples/s." },
+      { name: "Zomato-Assistant-AI-Powered-Restaurant", lang: "Python • LangChain & Gemini", desc: "AI Restaurant Assistant with SQLAlchemy, Faker test data, and Gemini-powered LangChain ReAct agent." },
+      { name: "RAG_ChatPDF", lang: "Python • LangGraph & FastAPI", desc: "Advanced RAG system leveraging LangGraph stateful workflows, FastAPI backend, and Streamlit frontend." },
+      { name: "BBC_News_Summarization", lang: "Jupyter Notebook • Groq & TTS", desc: "Live BBC News scraping pipeline with BeautifulSoup, Groq API summarization/sentiment, and Google TTS." },
+      { name: "Real-state-price-prediction-and-recommendations-and-analytics", lang: "Jupyter Notebook • Scikit-learn & MLflow", desc: "Real estate price prediction (0.99 R²), property recommendations, DVC versioning, and MLflow tracking." },
+      { name: "Credit-card-financial-dashboard", lang: "Power BI • SQL Analytics", desc: "Comprehensive credit card weekly financial dashboard providing real-time insights into performance metrics." },
+      { name: "Customer-trends-data-analysis-SQL-Python-PowerBI", lang: "Jupyter Notebook • SQL & Power BI", desc: "Customer behavior and purchasing trend analytics across SQL, Python, and Power BI." },
+      { name: "TATA_FORAGE_PRACTICE", lang: "Jupyter Notebook • GenAI Analytics", desc: "Tata Group Data Analytics Job Simulation: GenAI EDA, delinquency prediction, and agentic collections." },
+      { name: "ai-with-memory", lang: "Python • Stateful LLMs", desc: "Conversational AI architectures with persistent long-term and short-term memory workflows." },
+      { name: "Youtube_Sentiment_Plugin", lang: "Python • NLP Plugin", desc: "End-to-end YouTube comment sentiment extraction and analytics plugin." },
+      { name: "Fraud_Detection_Model", lang: "Python • Anomaly Detection", desc: "Machine learning classification workflow for financial transaction fraud detection." },
+      { name: "mlops-mini-project", lang: "Jupyter Notebook • MLOps", desc: "Reproducible MLOps pipeline with experiment tracking, model registry, and automated workflows." },
+      { name: "Movie_Recommendation_System", lang: "Jupyter Notebook • Recommender ML", desc: "Content and similarity-based movie recommendation engine." },
+      { name: "SmartPhone_Price-_Prediction", lang: "Jupyter Notebook • Regression ML", desc: "Feature engineering and regression modeling for smartphone price estimation." },
+      { name: "Data-Vizualisation-using-Plotly-and-Streamlit", lang: "Python • Plotly & Streamlit", desc: "Interactive web-based data visualization dashboards powered by Plotly and Streamlit." },
+      { name: "TensorTonic-Solutions", lang: "Python • Deep Learning Math", desc: "Solutions to TensorTonic machine learning and tensor manipulation problems." },
+      { name: "Confidance_interval_viz", lang: "Python • Statistical Simulation", desc: "Interactive visual simulation of statistical confidence intervals." },
+      { name: "Z-Dist-Confidance-Interval", lang: "Python • Probability & Stats", desc: "Z-distribution confidence interval computation and visualization in Python." },
+      { name: "Helper_Code", lang: "Python • ML Utilities", desc: "Reusable data preprocessing, evaluation, and plotting utility modules." },
+      { name: "Visheshsing", lang: "Markdown • Profile Config", desc: "GitHub profile README and portfolio showcase configuration." }
+    ];
+
+    const repoGrid = document.getElementById("repo-vault-grid");
+    const repoSearch = document.getElementById("repo-search");
+    const repoCountLabel = document.getElementById("repo-count-label");
+
+    function renderRepos(filterText = "") {
+      const q = filterText.trim().toLowerCase();
+      const filtered = allRepos.filter(r =>
+        r.name.toLowerCase().includes(q) ||
+        r.lang.toLowerCase().includes(q) ||
+        r.desc.toLowerCase().includes(q)
+      );
+      repoCountLabel.textContent = `Showing ${filtered.length} of ${allRepos.length} repositories`;
+
+      if (!filtered.length) {
+        repoGrid.innerHTML = `
+          <div class="repo-mini-item" style="grid-column: 1 / -1; min-height: 140px; display:flex; align-items:center; justify-content:center; text-align:center; opacity:0.9;">
+            <div>
+              <div class="repo-mini-name" style="font-size:1rem; color:var(--text-main);">No repositories match this search.</div>
+              <div class="repo-mini-desc" style="margin-top:8px;">Try a different keyword like Python, RAG, NLP, or ML.</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      repoGrid.innerHTML = filtered.map(r => `
+        <a class="repo-mini-item" href="https://github.com/Visheshsing/${r.name}" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="repo-mini-name">${r.name} ↗</div>
+            <div class="repo-mini-desc" style="margin-top:6px;">${r.desc}</div>
+          </div>
+          <div class="repo-mini-lang">${r.lang}</div>
+        </a>
+      `).join("");
+    }
+    renderRepos();
+    repoSearch.addEventListener("input", e => renderRepos(e.target.value));
+
+    const navLinks = [...document.querySelectorAll('.nav-links a')];
+    const sections = navLinks
+      .map(link => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+
+    function updateActiveNavLink() {
+      const scrollPosition = window.scrollY + 150;
+      let currentId = 'about';
+
+      for (const section of sections) {
+        if (section.offsetTop <= scrollPosition) {
+          currentId = section.id;
+        }
+      }
+
+      navLinks.forEach(link => {
+        const isActive = link.getAttribute('href') === `#${currentId}`;
+        link.classList.toggle('active', isActive);
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+    updateActiveNavLink();
+
+    // =========================================================================
+    // 2. PROJECT FILTERING & 3D INSPECTION MODAL
+    // =========================================================================
+    const projectDetails = [
+      {
+        title: "Wildlife Image Classification for Conservation",
+        category: "DEEP LEARNING • COMPUTER VISION",
+        metric: "91.24% Validation Accuracy (DrivenData Leaderboard)",
+        desc: "Designed to assist biodiversity researchers by automatically classifying camera-trap wildlife images across 8 distinct animal classes.",
+        bullets: [
+          "Constructed a transfer learning pipeline in PyTorch using pretrained EfficientNet backbones.",
+          "Applied random affine transforms, color jitter, and normalization to combat camera-trap lighting variance.",
+          "Tuned learning-rate schedules and cross-entropy loss weights to reach 91.24% validation accuracy."
+        ],
+        stack: ["PyTorch", "EfficientNet", "Transfer Learning", "Data Augmentation", "DrivenData"],
+        link: "https://github.com/Visheshsing/Wildlife-Image-Classification-for-Conservation"
+      },
+      {
+        title: "BERT Fine-Tuning for Sentiment Analysis",
+        category: "NLP • HUGGING FACE TRANSFORMERS",
+        metric: "93.43% Test Accuracy | 23.32 samples/sec Throughput",
+        desc: "Production-grade transformer fine-tuning workflow for high-accuracy text sentiment classification with full telemetry.",
+        bullets: [
+          "Fine-tuned pretrained BERT layers with custom classification heads using Hugging Face Transformers.",
+          "Logged hyperparameters, gradients, and evaluation matrices in real time via Weights & Biases (W&B).",
+          "Benchmarked batched GPU/CPU inference latency to achieve 23.32 samples/second."
+        ],
+        stack: ["BERT", "Hugging Face", "PyTorch", "Weights & Biases", "NLP"],
+        link: "https://github.com/Visheshsing/BERT_Fine_Tuning_for_Sentiment_Analysis-"
+      },
+      {
+        title: "AI Restaurant Assistant (Zomato AI Agent)",
+        category: "GENERATIVE AI • REACT AGENT",
+        metric: "Autonomous Booking, Ordering & Reviews via Gemini",
+        desc: "End-to-end conversational restaurant assistant capable of querying relational databases and executing transactions via natural language.",
+        bullets: [
+          "Built modular backend services in Python with SQLAlchemy ORM for reservations, menu ordering, and customer reviews.",
+          "Populated realistic multi-table test environments using Faker.",
+          "Implemented a LangChain ReAct agent powered by Google Gemini to reason over user prompts and invoke database tools."
+        ],
+        stack: ["LangChain", "Gemini API", "ReAct Agent", "SQLAlchemy", "Faker", "Python"],
+        link: "https://github.com/Visheshsing/Zomato-Assistant-AI-Powered-Restaurant"
+      },
+      {
+        title: "RAG ChatPDF — Agentic Document Intelligence",
+        category: "GENERATIVE AI • LANGGRAPH & FASTAPI",
+        metric: "Stateful Multi-Turn PDF Retrieval & Reasoning",
+        desc: "An advanced Retrieval-Augmented Generation (RAG) architecture combining LangGraph state machines with FastAPI and Streamlit.",
+        bullets: [
+          "Orchestrated stateful cyclic agent graphs using LangGraph for context-aware query rewriting and verification.",
+          "Chunked and indexed PDF documents into vector stores for high-precision semantic retrieval.",
+          "Decoupled the FastAPI inference backend from the interactive Streamlit frontend."
+        ],
+        stack: ["LangGraph", "LangChain", "FastAPI", "Streamlit", "Vector Stores", "RAG"],
+        link: "https://github.com/Visheshsing/RAG_ChatPDF"
+      },
+      {
+        title: "Real-Time BBC News Summarization & Sentiment System",
+        category: "NLP • GROQ API & AUDIO SYNTHESIS",
+        metric: "Live Web Scraping + Abstractive Summary + TTS Audio",
+        desc: "Automated media intelligence pipeline that scrapes breaking BBC news, evaluates sentiment, summarizes key points, and reads them aloud.",
+        bullets: [
+          "Engineered BeautifulSoup HTML parsers to extract live article headlines and body text from BBC News.",
+          "Connected Groq's high-speed LLM inference API for instant abstractive summarization and polarity scoring.",
+          "Converted text briefings into natural audio streams using Google Text-to-Speech (TTS)."
+        ],
+        stack: ["Groq API", "BeautifulSoup", "Google TTS", "Python", "NLP"],
+        link: "https://github.com/Visheshsing/BBC_News_Summarization"
+      },
+      {
+        title: "Real Estate Price Prediction, Recommendation & Analytics",
+        category: "MACHINE LEARNING • MLOPS PIPELINE",
+        metric: "0.99 R² Score | DVC + MLflow Tracked",
+        desc: "Unified property intelligence platform providing price estimation, similar-property recommendations, and market analytics.",
+        bullets: [
+          "Trained and compared ensemble regression models in Scikit-learn, achieving R² = 0.99 on evaluation splits.",
+          "Built a cosine-similarity recommendation module to suggest comparable properties by location and amenities.",
+          "Enforced reproducible MLOps governance using DVC for data versioning and MLflow for experiment tracking."
+        ],
+        stack: ["Scikit-learn", "MLflow", "DVC", "Pandas", "Feature Engineering"],
+        link: "https://github.com/Visheshsing/Real-state-price-prediction-and-recommendations-and-analytics"
+      },
+      {
+        title: "Credit Card Financial Weekly Dashboard",
+        category: "DATA ANALYTICS • BUSINESS INTELLIGENCE",
+        metric: "Real-Time Weekly Transaction & Revenue Telemetry",
+        desc: "Interactive financial analytics dashboard tracking weekly credit card spend, interest income, utilization, and customer demographics.",
+        bullets: [
+          "Structured relational SQL queries and DAX calculated measures for week-over-week revenue growth.",
+          "Designed executive drill-down filters across card tiers, expenditure categories, and regional segments."
+        ],
+        stack: ["Power BI", "SQL", "DAX", "Dashboard Design"],
+        link: "https://github.com/Visheshsing/Credit-card-financial-dashboard"
+      },
+      {
+        title: "Customer Trends & Behavior Data Analysis",
+        category: "DATA ANALYTICS • SQL, PYTHON & POWER BI",
+        metric: "Multi-Tool Cohort & Purchasing Behavior Insights",
+        desc: "Cross-platform analytical study uncovering customer purchasing frequency, category affinity, and retention drivers.",
+        bullets: [
+          "Combined SQL aggregations with Python (Pandas/Seaborn) exploratory hypothesis testing.",
+          "Published interactive Power BI visual stories for merchandising and retention strategy."
+        ],
+        stack: ["SQL", "Python", "Power BI", "Pandas", "Seaborn"],
+        link: "https://github.com/Visheshsing/Customer-trends-data-analysis-SQL-Python-PowerBI"
+      }
+    ];
+
+    function openProjectModal(idx) {
+      const p = projectDetails[idx];
+      document.getElementById("modal-category").textContent = p.category;
+      document.getElementById("modal-title").textContent = p.title;
+      document.getElementById("modal-metric").textContent = p.metric;
+      document.getElementById("modal-desc").textContent = p.desc;
+      document.getElementById("modal-bullets").innerHTML = p.bullets.map(b => `<li>${b}</li>`).join("");
+      document.getElementById("modal-stack").innerHTML = p.stack.map(s => `<span class="tech-chip">${s}</span>`).join("");
+      document.getElementById("modal-link").href = p.link;
+      document.getElementById("project-modal").classList.add("open");
+    }
+
+    function closeProjectModal() {
+      document.getElementById("project-modal").classList.remove("open");
+    }
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const filter = btn.dataset.filter;
+        document.querySelectorAll("#featured-projects-grid .project-card").forEach(card => {
+          if (filter === "all" || card.dataset.category === filter) {
+            card.style.display = "flex";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+
+    // =========================================================================
+    // 3. INTERACTIVE 3D CARD TILT & SPECULAR GLARE ENGINE
+    // =========================================================================
+    const tiltCards = document.querySelectorAll("[data-tilt]");
+    tiltCards.forEach(card => {
+      card.addEventListener("mousemove", e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -6.5;
+        const rotateY = ((x - centerX) / centerX) * 6.5;
+
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+        card.style.transform = `perspective(1100px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "";
+      });
+    });
+
+    // =========================================================================
+    // 4. INTERACTIVE 3D SKILL SPHERE (HERO HOLOGRAM CANVAS)
+    // =========================================================================
+    const sphereCanvas = document.getElementById("mini-3d-sphere");
+    const sCtx = sphereCanvas.getContext("2d");
+    const skillTags = [
+      "Python", "PyTorch", "LangChain", "LangGraph", "FastAPI",
+      "BERT", "EfficientNet", "RAG", "Gemini API", "Groq API",
+      "Scikit-learn", "MLflow", "DVC", "W&B", "Power BI",
+      "SQL", "PostgreSQL", "Streamlit", "Pandas", "TensorFlow"
+    ];
+
+    const sphereNodes = skillTags.map((tag, i) => {
+      const phi = Math.acos(-1 + (2 * i + 1) / skillTags.length);
+      const theta = Math.sqrt(skillTags.length * Math.PI) * phi;
+      return {
+        tag,
+        x: Math.cos(theta) * Math.sin(phi),
+        y: Math.sin(theta) * Math.sin(phi),
+        z: Math.cos(phi)
+      };
+    });
+
+    let rotX = 0.006;
+    let rotY = 0.01;
+    let draggingSphere = false;
+    let lastMouseX = 0, lastMouseY = 0;
+
+    sphereCanvas.addEventListener("mousedown", e => {
+      draggingSphere = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+    window.addEventListener("mouseup", () => draggingSphere = false);
+    window.addEventListener("mousemove", e => {
+      if (!draggingSphere) return;
+      const dx = e.clientX - lastMouseX;
+      const dy = e.clientY - lastMouseY;
+      rotY = dx * 0.003;
+      rotX = -dy * 0.003;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+
+    function rotateSphereNodes() {
+      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      sphereNodes.forEach(n => {
+        // Rotate around X
+        let y1 = n.y * cosX - n.z * sinX;
+        let z1 = n.y * sinX + n.z * cosX;
+        // Rotate around Y
+        let x2 = n.x * cosY + z1 * sinY;
+        let z2 = -n.x * sinY + z1 * cosY;
+        n.x = x2; n.y = y1; n.z = z2;
+      });
+    }
+
+    function renderSkillSphere() {
+      sCtx.clearRect(0, 0, sphereCanvas.width, sphereCanvas.height);
+      rotateSphereNodes();
+
+      const cx = sphereCanvas.width / 2;
+      const cy = sphereCanvas.height / 2;
+      const radius = 98;
+
+      // Draw subtle 3D wireframe connections
+      sCtx.strokeStyle = "rgba(56, 189, 248, 0.14)";
+      sCtx.lineWidth = 1;
+      for (let i = 0; i < sphereNodes.length; i++) {
+        for (let j = i + 1; j < sphereNodes.length; j++) {
+          const a = sphereNodes[i], b = sphereNodes[j];
+          const dist = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+          if (dist < 0.85) {
+            const scaleA = 240 / (240 - a.z * radius);
+            const scaleB = 240 / (240 - b.z * radius);
+            sCtx.beginPath();
+            sCtx.moveTo(cx + a.x * radius * scaleA, cy + a.y * radius * scaleA);
+            sCtx.lineTo(cx + b.x * radius * scaleB, cy + b.y * radius * scaleB);
+            sCtx.stroke();
+          }
+        }
+      }
+
+      // Sort back-to-front by Z
+      const sorted = [...sphereNodes].sort((a, b) => a.z - b.z);
+      sorted.forEach(n => {
+        const perspective = 240 / (240 - n.z * radius);
+        const px = cx + n.x * radius * perspective;
+        const py = cy + n.y * radius * perspective;
+        const alpha = Math.max(0.25, Math.min(1, (n.z + 1.2) / 2));
+
+        sCtx.save();
+        sCtx.font = `${Math.round(11 * perspective)}px 'JetBrains Mono', monospace`;
+        const textWidth = sCtx.measureText(n.tag).width;
+
+        sCtx.fillStyle = `rgba(15, 25, 55, ${alpha * 0.85})`;
+        sCtx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.75})`;
+        sCtx.lineWidth = 1;
+        sCtx.beginPath();
+        sCtx.roundRect(px - textWidth / 2 - 7, py - 10, textWidth + 14, 20, 999);
+        sCtx.fill();
+        sCtx.stroke();
+
+        sCtx.fillStyle = `rgba(248, 250, 252, ${alpha})`;
+        sCtx.textAlign = "center";
+        sCtx.textBaseline = "middle";
+        sCtx.fillText(n.tag, px, py);
+        sCtx.restore();
+      });
+
+      requestAnimationFrame(renderSkillSphere);
+    }
+    renderSkillSphere();
+
+    // =========================================================================
+    // 5. FULL-VIEWPORT 3D BACKGROUND ENGINE (NEURAL CORE & FLOATING POLYHEDRA)
+    // =========================================================================
+    const bgCanvas = document.getElementById("canvas-3d");
+    const ctx = bgCanvas.getContext("2d");
+    let width = (bgCanvas.width = window.innerWidth);
+    let height = (bgCanvas.height = window.innerHeight);
+
+    window.addEventListener("resize", () => {
+      width = bgCanvas.width = window.innerWidth;
+      height = bgCanvas.height = window.innerHeight;
+    });
+
+    let bgMode = 0; // 0 = Neural Core, 1 = Star Warp, 2 = Floating Polyhedra
+    const modes = ["Neural Core", "Star Warp", "3D Polyhedra"];
+
+    const particles = Array.from({ length: 85 }, () => ({
+      x: (Math.random() - 0.5) * 1400,
+      y: (Math.random() - 0.5) * 900,
+      z: Math.random() * 1000,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      vz: -1.2 - Math.random() * 1.5,
+      size: 1.5 + Math.random() * 2.2
+    }));
+
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener("mousemove", e => {
+      mouseX = (e.clientX / width - 0.5) * 2;
+      mouseY = (e.clientY / height - 0.5) * 2;
+    });
+
+    function renderBackground3D() {
+      ctx.clearRect(0, 0, width, height);
+      const cx = width / 2 + mouseX * 45;
+      const cy = height / 2 + mouseY * 45;
+      const fov = 550;
+
+      const projected = [];
+
+      particles.forEach(p => {
+        if (bgMode === 1) {
+          p.z += p.vz * 4.2;
+        } else {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.z += p.vz * 0.65;
+        }
+
+        if (p.z <= 10) {
+          p.z = 1000;
+          p.x = (Math.random() - 0.5) * 1400;
+          p.y = (Math.random() - 0.5) * 900;
+        }
+
+        const scale = fov / (fov + p.z);
+        const x2d = cx + p.x * scale;
+        const y2d = cy + p.y * scale;
+        const alpha = Math.min(0.85, (1000 - p.z) / 900);
+
+        projected.push({ x2d, y2d, scale, alpha, p });
+
+        if (bgMode === 2) {
+          // Draw 3D wireframe diamond/octahedron per node
+          const r = p.size * scale * 5.5;
+          ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.55})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(x2d, y2d - r);
+          ctx.lineTo(x2d + r, y2d);
+          ctx.lineTo(x2d, y2d + r);
+          ctx.lineTo(x2d - r, y2d);
+          ctx.closePath();
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = `rgba(56, 189, 248, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(x2d, y2d, p.size * scale * 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // Connect nearby 3D particles in Neural Core mode
+      if (bgMode === 0) {
+        ctx.lineWidth = 0.8;
+        for (let i = 0; i < projected.length; i++) {
+          for (let j = i + 1; j < projected.length; j++) {
+            const a = projected[i], b = projected[j];
+            const d = Math.hypot(a.x2d - b.x2d, a.y2d - b.y2d);
+            if (d < 135) {
+              const lineAlpha = (1 - d / 135) * 0.22 * Math.min(a.alpha, b.alpha);
+              ctx.strokeStyle = `rgba(129, 140, 248, ${lineAlpha})`;
+              ctx.beginPath();
+              ctx.moveTo(a.x2d, a.y2d);
+              ctx.lineTo(b.x2d, b.y2d);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      requestAnimationFrame(renderBackground3D);
+    }
+    renderBackground3D();
+
+    // =========================================================================
+    // 6. HUD CONTROLS (GRAVITY, 3D MODE, COLOR THEME)
+    // =========================================================================
+    let gravityState = 1;
+    document.getElementById("btn-gravity").addEventListener("click", () => {
+      gravityState = (gravityState + 1) % 3;
+      const amps = [0, 1, 2.1];
+      const labels = ["Locked", "Zero-G", "Deep Float"];
+      document.documentElement.style.setProperty("--float-amp", amps[gravityState]);
+      document.getElementById("gravity-label").textContent = labels[gravityState];
+    });
+
+    document.getElementById("btn-mode").addEventListener("click", () => {
+      bgMode = (bgMode + 1) % modes.length;
+      document.getElementById("mode-label").textContent = modes[bgMode];
+    });
+
+    const themes = ["cyber", "emerald", "solar"];
+    let themeIdx = 0;
+    document.getElementById("btn-theme").addEventListener("click", () => {
+      themeIdx = (themeIdx + 1) % themes.length;
+      if (themes[themeIdx] === "cyber") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", themes[themeIdx]);
+      }
+    });
+
+    // =========================================================================
+    // 7. AI TWIN CONVERSATIONAL ASSISTANT
+    // =========================================================================
+    const chatLog = document.getElementById("chat-log");
+    const chatInput = document.getElementById("chat-input");
+
+    function askTwin(question) {
+      chatInput.value = question;
+      sendChat();
+    }
+
+    function sendChat() {
+      const q = chatInput.value.trim();
+      if (!q) return;
+      chatLog.innerHTML += `<div class="msg-user">&gt; ${q}</div>`;
+      chatInput.value = "";
+
+      const ql = q.toLowerCase();
+      let reply = "";
+      if (ql.includes("current") || ql.includes("role") || ql.includes("work") || ql.includes("intern") || ql.includes("bacancy")) {
+        reply = "Vishesh is currently an <strong>AI/ML Intern at Bacancy Technology in Ahmedabad</strong> (Sep 2026 – Present), focusing on machine learning implementation, deep learning, NLP, and LLM application workflows. Previously, he completed the <strong>Tata Group Data Analytics Simulation (Aug 2026)</strong> and interned as an <strong>AI Intern at Coding Juniors (Jan–Mar 2025)</strong>.";
+      } else if (ql.includes("project") || ql.includes("accuracy") || ql.includes("metric") || ql.includes("top")) {
+        reply = "His flagship benchmarks include: <strong>93.43% test accuracy</strong> (23.32 samples/sec) on BERT Sentiment Analysis, <strong>91.24% validation accuracy</strong> on Wildlife Image Classification (PyTorch + EfficientNet), <strong>0.99 R²</strong> on Real Estate Price Prediction (tracked via DVC & MLflow), plus his <strong>Gemini ReAct Restaurant Agent</strong> and <strong>LangGraph RAG ChatPDF</strong> system.";
+      } else if (ql.includes("stack") || ql.includes("skill") || ql.includes("genai") || ql.includes("mlops")) {
+        reply = "Vishesh specializes in <strong>Python, SQL, PyTorch, TensorFlow, and Scikit-learn</strong>, paired with a modern GenAI stack (<strong>LangChain, LangGraph, RAG, Gemini API, Groq API, Hugging Face</strong>) and MLOps/API tooling (<strong>FastAPI, Streamlit, MLflow, DVC, Weights & Biases, Power BI</strong>).";
+      } else if (ql.includes("contact") || ql.includes("hire") || ql.includes("email") || ql.includes("phone")) {
+        reply = "You can reach Vishesh directly at <strong>specialvish8840@gmail.com</strong> or <strong>+91 8840241747</strong>, inspect all 21 repositories on <a href='https://github.com/Visheshsing' target='_blank' style='color:var(--accent-primary);'>github.com/Visheshsing</a>, or connect via <a href='http://www.linkedin.com/in/vishesh-singh-370602222' target='_blank' style='color:var(--accent-primary);'>LinkedIn</a>.";
+      } else {
+        reply = "Vishesh holds a <strong>B.Tech in Computer Science & Engineering from CSJM University, Kanpur (2021–2025)</strong> and has built 21 open-source repositories spanning Agentic AI, RAG, Computer Vision, NLP, and Power BI analytics. Try clicking any project card above to inspect its 3D architecture!";
+      }
+
+      setTimeout(() => {
+        chatLog.innerHTML += `<div class="msg-bot"><strong>[Vishesh AI Twin]:</strong> ${reply}</div>`;
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }, 180);
+    }
+  </script>
+</body>
+</html>
